@@ -4,6 +4,8 @@ create table route_points (
     route_id uuid not null references routes(id) on delete cascade,
     point_name text not null,
 
+    stop_sequence integer not null,
+
     latitude double precision not null,
     longitude double precision not null,
     
@@ -14,4 +16,4 @@ create table route_points (
 create index idx_route_points_route_id on route_points(route_id);
 create index idx_route_points_point_name on route_points(point_name);
 
-create rls policy "Allow all" on route_points for all using (true);
+CREATE POLICY "Allow all" ON route_points FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);

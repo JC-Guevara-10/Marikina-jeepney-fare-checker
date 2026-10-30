@@ -9,4 +9,4 @@ create table routes (
 
 create index idx_routes_route_name on routes(route_name);
 
-create rls policy "Allow all" on routes for all using (true);
+CREATE POLICY "Allow all" ON routes FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
