@@ -13,7 +13,7 @@ from app.monitoring.model import record_admin_action
 from app.routes import router as routes_router
 from app.stops import router as stops_router
 
-app = FastAPI(title="Commute.ph API", description="Jeepney fare checker for Marikina City", version="1.0.0")
+app = FastAPI(title="Sakay.Marikina API", description="Jeepney fare checker for Marikina City", version="1.0.0")
 
 # Browsers may call the API only from these origins (comma-separated in CORS_ORIGINS)
 cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:5173,http://localhost:3000")

@@ -5,7 +5,7 @@ import styles from './Header.module.css'
 export default function Header() {
   return (
     <header className={styles.header}>
-      <Link to="/" className={styles.logo} aria-label="Commute.ph home">
+      <Link to="/" className={styles.logo} aria-label="Sakay.Marikina home">
         <div className={styles.logoIcon} aria-hidden="true"><Icon name="jeepney" /></div>
         <span className={styles.logoText}>
           commute<span className={styles.dot}>.</span>ph

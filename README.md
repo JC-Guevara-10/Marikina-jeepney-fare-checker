@@ -1,4 +1,4 @@
-# Commute.ph
+# Sakay.Marikina
 
 Jeepney fare checker for Marikina City. Pick a starting stop and a destination, and it shows the route that connects them, the road distance, and the regular or discounted (student / senior citizen / PWD) fare.
 

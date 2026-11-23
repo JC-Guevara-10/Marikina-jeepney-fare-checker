@@ -27,7 +27,7 @@ const STEPS = [
   {
     num: '5',
     title: 'Confirm with your driver',
-    body: 'Commute.ph shows estimates. Always verify the actual fare with your driver or operator before riding.',
+    body: 'Sakay.Marikina shows estimates. Always verify the actual fare with your driver or operator before riding.',
   },
 ]
 
@@ -59,7 +59,7 @@ export default function HowItWorksPage() {
           <p>
             <strong><Icon name="alert" /> Important:</strong> Fares shown are estimates from the fare
             matrix on file, and each result shows that matrix's source and
-            effective date. Commute.ph is not affiliated with LTFRB or any government
+            effective date. Sakay.Marikina is not affiliated with LTFRB or any government
             agency.
           </p>
         </div>

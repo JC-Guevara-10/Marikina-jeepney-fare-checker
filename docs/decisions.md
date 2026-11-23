@@ -31,4 +31,4 @@ Agreed 2026-11-05 to resolve where the docs and the code disagreed. Each line sa
 
 ## Open
 
-- App name: the UI says "Sakay", the docs say "Commut.ph", the repo is "Commute.ph".
+- App name: the UI says "Sakay", the docs and repo now say "Sakay.Marikina".
