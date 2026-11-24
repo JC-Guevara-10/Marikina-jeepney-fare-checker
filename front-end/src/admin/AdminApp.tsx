@@ -57,7 +57,7 @@ export default function AdminApp() {
   return (
     <div className={styles.shell}>
       <header className={styles.topbar}>
-        <span className={styles.brand}>Commute.ph admin</span>
+        <span className={styles.brand}>Sakay.Marikina admin</span>
         <nav className={styles.nav} aria-label="Admin sections">
           <NavLink to="/admin/dashboard" className={link}>Dashboard</NavLink>
           <NavLink to="/admin/fare-matrices" className={link}>Fare matrices</NavLink>
@@ -108,7 +108,7 @@ function SignIn() {
   return (
     <main className={`${styles.login} ${styles.section}`}>
       <h1 className={styles.title}>Admin sign-in</h1>
-      <p className={styles.subtitle}>Commute.ph fare data management</p>
+      <p className={styles.subtitle}>Sakay.Marikina fare data management</p>
       <form onSubmit={submit} style={{ display: 'grid', gap: 12 }}>
         <label className={styles.field}>
           Email

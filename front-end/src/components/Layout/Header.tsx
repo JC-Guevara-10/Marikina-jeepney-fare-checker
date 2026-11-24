@@ -8,7 +8,7 @@ export default function Header() {
       <Link to="/" className={styles.logo} aria-label="Sakay.Marikina home">
         <div className={styles.logoIcon} aria-hidden="true"><Icon name="jeepney" /></div>
         <span className={styles.logoText}>
-          commute<span className={styles.dot}>.</span>ph
+          sakay<span className={styles.dot}>.</span>marikina
         </span>
       </Link>
 
