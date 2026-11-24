@@ -66,18 +66,21 @@ def version_info(db: Session, version_id: uuid.UUID | None) -> FareMatrixVersion
 
 def estimate_fare(db: Session, origin_id: uuid.UUID, destination_id: uuid.UUID, puv_type: str) -> dict:
     """The fare estimate response: the matrix in effect and the matching routes."""
-    routes = get_routes_between_stops(db, origin_id, destination_id, puv_type)
+    # Looked up once: every extra query is a network round trip to the hosted database
+    version_id = current_version_id(db, puv_type)
+    routes = get_routes_between_stops(db, origin_id, destination_id, puv_type, version_id)
     return {
         "origin_stop_id": origin_id,
         "destination_stop_id": destination_id,
         "puv_type": puv_type,
-        "fare_matrix": version_info(db, current_version_id(db, puv_type)),
+        "fare_matrix": version_info(db, version_id),
         "routes": routes,
     }
 
 
 def get_routes_between_stops(
-    db: Session, origin_id: uuid.UUID, destination_id: uuid.UUID, puv_type: str
+    db: Session, origin_id: uuid.UUID, destination_id: uuid.UUID, puv_type: str,
+    version_id: uuid.UUID | None,
 ) -> list[dict]:
     """
     Get every route of a PUV type that passes both stops (in either direction), with the stops
@@ -93,8 +96,6 @@ def get_routes_between_stops(
             raise HTTPException(status_code=404, detail=f"Stop with ID {stop_id} not found")
     if db.get(PuvType, puv_type) is None:
         raise HTTPException(status_code=404, detail=f"Unknown PUV type {puv_type!r}")
-
-    version_id = current_version_id(db, puv_type)
 
     saved = db.execute(
         select(SavedFare).where(
