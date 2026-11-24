@@ -8,6 +8,11 @@ from cryptography.hazmat.primitives.asymmetric import ec
 os.environ.setdefault("PUBLIC_RATE_LIMIT_PER_MINUTE", "100000")
 
 from app import security
+from app.db.database import SUPABASE_CONNECTION_STRING
+
+# The suite asserts on global state and writes rows: never run it against a shared or production database
+if not any(h in SUPABASE_CONNECTION_STRING for h in ("@127.0.0.1", "@localhost")):
+    raise RuntimeError("Tests only run against a local database (`supabase start`). Unset SUPABASE_CONNECTION_STRING.")
 
 # Admin tokens are signed with a throwaway key instead of Supabase's; the app verifies them
 # exactly like real ones, only the public key lookup is swapped

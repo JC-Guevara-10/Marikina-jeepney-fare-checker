@@ -111,7 +111,7 @@ The admin panel covers:
 
 ## Tests
 
-The API tests run against the database in `back-end/.env` and clean up the data they create.
+The API tests need a local, empty database (`cd back-end && supabase start`) and refuse to run against anything else. They clean up the data they create.
 
 ```bash
 cd back-end && .venv/bin/python -m pytest

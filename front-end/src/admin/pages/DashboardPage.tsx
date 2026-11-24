@@ -17,7 +17,7 @@ const TARGETS = {
 
 const RANGES = [7, 30, 90]
 
-const pct = (v: number | null) => (v === null ? '—' : `${Math.round(v * 100)}%`)
+const pct = (v: number | null) => (v === null ? '—' : `${+(v * 100).toFixed(1)}%`)
 
 /** KPI monitoring: fare lookup volume and quality, fare data freshness, and recent admin changes. */
 export default function DashboardPage() {
@@ -177,7 +177,7 @@ function DailyChart({ daily, days }: { daily: Stats['daily']; days: number }) {
       <svg viewBox={`0 0 ${W} ${H}`} role="img" className={dash.chartSvg}
            aria-label={`Bar chart of fare lookups per day over the last ${days} days, peaking at ${max}.`}
            onPointerLeave={() => setActive(null)}>
-        {[0, 0.5, 1].map((f) => (
+        {(max > 1 ? [0, 0.5, 1] : [0, 1]).map((f) => (
           <g key={f}>
             <line x1={left} x2={W} y1={8 + plotH * (1 - f)} y2={8 + plotH * (1 - f)} className={dash.grid} />
             <text x={left - 6} y={8 + plotH * (1 - f)} className={dash.axis} textAnchor="end" dominantBaseline="middle">

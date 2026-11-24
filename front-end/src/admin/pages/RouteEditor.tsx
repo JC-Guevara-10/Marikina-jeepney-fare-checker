@@ -113,7 +113,7 @@ export default function RouteEditor() {
             Add a stop at the end
             <select value={toAdd} onChange={(e) => setToAdd(e.target.value)}>
               <option value="">Choose a stop…</option>
-              {allStops.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
+              {allStops.filter((s) => order[order.length - 1] !== s.id).map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
             </select>
           </label>
           <button className={styles.button} disabled={!toAdd} onClick={() => { setOrder([...order, toAdd]); setToAdd('') }}>Add</button>

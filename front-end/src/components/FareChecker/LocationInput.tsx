@@ -138,7 +138,9 @@ export default function LocationInput({
       {open && (
         <ul id={listId} className={styles.dropdown} role="listbox" aria-label={label}>
           {suggestions.length === 0 ? (
-            <li className={styles.empty}>No stop matches “{query.trim()}”. Try another name.</li>
+            <li className={styles.empty}>{excludeName && matchStops(stops, query).length > 0
+              ? 'That’s already your starting point.'
+              : `No stop matches “${query.trim()}”. Try another name.`}</li>
           ) : suggestions.map((stop, i) => (
             <li
               key={stop.id}

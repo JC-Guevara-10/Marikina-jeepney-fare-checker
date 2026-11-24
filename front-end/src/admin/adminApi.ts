@@ -122,12 +122,22 @@ async function request<T>(method: string, path: string, body?: unknown): Promise
   if (!res.ok) {
     const data = await res.json().catch(() => ({}))
     const detail = Array.isArray(data.detail)
-      ? data.detail.map((d: { loc?: string[]; msg: string }) => `${d.loc?.slice(1).join('.')}: ${d.msg}`).join('; ')
+      ? data.detail.map((d: { loc?: string[]; msg: string }) => `${d.loc?.slice(1).join('.')}: ${plainMessage(d.msg)}`).join('; ')
       : data.detail
     console.error(`${method} ${path} -> ${res.status}`, data)
     throw new Error(detail || `Request failed: ${res.status}`)
   }
   return (res.status === 204 ? undefined : res.json()) as Promise<T>
+}
+
+/** Turns pydantic's wording ("Input should be less than or equal to 90") into plain language. */
+function plainMessage(msg: string): string {
+  return msg
+    .replace(/^Input should be less than or equal to (.+)$/, 'must be $1 or less')
+    .replace(/^Input should be greater than or equal to (.+)$/, 'must be $1 or more')
+    .replace(/^Input should be a valid number.*$/, 'must be a number')
+    .replace(/^String should have at least 1 character$/, "can't be empty")
+    .replace(/^Field required$/, 'is required')
 }
 
 export const adminApi = {

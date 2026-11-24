@@ -11,7 +11,9 @@ from app.fair.model import FareMatrixRow, FareMatrixVersion, PuvType, SavedFare
 from app.fair.services import current_version_id
 from app.fare_matrices import schema
 from app.fare_matrices.parser import parse_fare_pdf
+from app.routes.model import Route
 from app.security import Admin
+from app.stops.model import RouteStop
 
 MAX_PDF_BYTES = 10 * 1024 * 1024
 
@@ -56,7 +58,7 @@ def detail(db: Session, version: FareMatrixVersion, parse_warnings: list[str] | 
     return {
         **summary(db, version, len(rows)),
         "rows": rows,
-        "issues": check(version, rows),
+        "issues": check(db, version, rows),
         "parse_warnings": parse_warnings or [],
     }
 
@@ -76,7 +78,7 @@ def list_versions(db: Session) -> list[dict]:
 
 # ---------------------------------------------------------------- Validation
 
-def check(version: FareMatrixVersion, rows: list) -> dict:
+def check(db: Session, version: FareMatrixVersion, rows: list) -> dict:
     """
     Check a matrix before publishing. Errors block publishing; warnings ask the admin to
     double-check (e.g. a discount that isn't the usual 20%).
@@ -104,6 +106,19 @@ def check(version: FareMatrixVersion, rows: list) -> dict:
         if abs(row.discounted_fare - row.regular_fare * Decimal("0.8")) > Decimal("0.50"):
             warnings.append(f"{row.distance_km} km: the discount isn't about 20% "
                             f"(₱{row.regular_fare} regular, ₱{row.discounted_fare} discounted).")
+
+    # Trips longer than the last row would have no fare
+    trips = (
+        select(func.sum(RouteStop.distance_from_previous_km).label("trip"))
+        .join(Route, Route.id == RouteStop.route_id)
+        .where(Route.puv_type == version.puv_type)
+        .group_by(RouteStop.route_id)
+        .subquery()
+    )
+    longest = db.execute(select(func.max(trips.c.trip))).scalar()
+    if longest is not None and longest > kms[-1]:
+        warnings.append(f"The matrix stops at {kms[-1]} km, but the longest route is {round(longest, 1)} km. "
+                        "Longer trips would have no fare.")
 
     for prev, row in itertools.pairwise(rows):
         if row.regular_fare < prev.regular_fare:
@@ -221,7 +236,7 @@ def publish_preview(db: Session, version_id: uuid.UUID) -> dict:
     today = manila_today(db)
     effective = version.effective_from
     return {
-        "issues": check(version, get_rows(db, version.id)),
+        "issues": check(db, version, get_rows(db, version.id)),
         # Every live saved fare of this PUV type was computed with the version in effect,
         # which this one replaces once it takes effect
         "retiring_saved_fares": live_saved_fares(db, version.puv_type),
@@ -233,7 +248,7 @@ def publish_preview(db: Session, version_id: uuid.UUID) -> dict:
 def publish(db: Session, version_id: uuid.UUID, admin: Admin) -> dict:
     version = get_version(db, version_id)
     require_draft(version)
-    issues = check(version, get_rows(db, version.id))
+    issues = check(db, version, get_rows(db, version.id))
     if issues["errors"]:
         raise HTTPException(status_code=422, detail=" ".join(issues["errors"]))
 

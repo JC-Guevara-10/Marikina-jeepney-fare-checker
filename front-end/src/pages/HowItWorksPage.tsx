@@ -12,7 +12,7 @@ const STEPS = [
   {
     num: '2',
     title: 'Choose your ride',
-    body: 'Pick a traditional Jeepney or a modern Beep Jeep (e-jeep). Beep Jeep fares are coming soon, once an official fare source is available.',
+    body: 'Pick a traditional Jeepney or a modern Beep Jeep (e-jeep). Fares are shown for the ride types that currently have a published fare matrix.',
   },
   {
     num: '3',
